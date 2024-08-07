@@ -1,0 +1,67 @@
+plugins {
+	id 'java'
+	id 'war'
+	id 'org.springframework.boot' version '3.2.8'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	// 의존성 추가
+	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+	
+	// implementation 'javax.servlet:jstl' spring 3.x.x 버전에서 사용 안됨
+	implementation group: 'org.glassfish.web', name: 'jakarta.servlet.jsp.jstl', version: '3.0.0'
+	
+	// TODO - tools xml 파일 error check 
+	providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+
+	// Spring Boot 웹 애플리케이션 개발을 위한 스타터 패키지
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	// MyBatis를 Spring Boot와 함께 사용하기 위한 스타터입니다.
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+	// Java 프로젝트에서 보일러플레이트 코드를 줄이기 위한 라이브러리입니다.
+	compileOnly 'org.projectlombok:lombok'
+	// 개발 중에 유용한 여러 기능을 제공하는 Spring Boot의 추가 도구
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	// 인메모리 데이터베이스로, 개발 및 테스트 목적으로 주로 사용
+	runtimeOnly 'com.h2database:h2'
+	// MySQL 데이터베이스에 연결하기 위한 JDBC 드라이버입니다.
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	// Lombok 라이브러리가 컴파일 시점에 어노테이션을 처리할 수 있도록 지원합니다.
+	annotationProcessor 'org.projectlombok:lombok'
+	// 이 의존성은 임베디드 Tomcat 서버에서 JSP 파일을 컴파일하기 위해 필요
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	// 테스트를 위한 스타터 패키지로, JUnit, Spring Test, Mockito 등을 포함하여 애플리케이션의 테스트를 지원
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// MyBatis와 함께 사용할 수 있는 테스트 지원 라이브러리
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
+	
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	
+	// TODO - tools xml 파일 error check 
+	providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
