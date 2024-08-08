@@ -18,9 +18,11 @@ public interface AccountRepository {
 	
 	// @Param :  Mybatis의 SQL 문장에 다수의 파라미터를 전달할 때
 	// --> 한사람에 유저는 여러개의 계좌 번호를 가질 수 있다. 
-	public List<Account> findByUserId(@Param("userId") Integer principalId);
+	public List<Account> findByUserId(@Param("userId") Integer principalId); // 유저 아이디로 찾는다.
+	// ( @Param("여기는DTO의 문자를 넣는다.") 여기는 들어갈 값 )
 	
-	public Account findByNumber(@Param("number") String id);
+	//  파라미터가 두개일경우 마이바티스에서 인식을 못하기때문에 @param을 사용해야한다.
+	public Account findByNumber(@Param("number") String id); 
 	
 	
 	
