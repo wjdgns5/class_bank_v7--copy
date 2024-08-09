@@ -7,9 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.tenco.bank.dto.SignInDTO;
 import com.tenco.bank.dto.SignUpDTO;
 import com.tenco.bank.handler.exception.DataDeliveryException;
+import com.tenco.bank.repository.model.User;
 import com.tenco.bank.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/user")
@@ -17,6 +21,9 @@ public class UserController {
 	
 	@Autowired // DI 처리 --> 의존성 주입
 	private UserService userService;
+	
+	@Autowired // DI 처리 --> 의존성 주입
+	private  HttpSession session; // 세션 준비
 	
 	/**
 	 * 회원 가입 페이지 요청
@@ -31,7 +38,7 @@ public class UserController {
 		// suffix: .jsp 
 		
 		return "user/signUp";
-	}
+	} // end of signUpPage()
 	
 	/**
 	 * 회원 가입 로직 처리 요청
@@ -66,8 +73,55 @@ public class UserController {
 		userService.createUser(dto);
 		
 		return "redirect:/index";
+	} // end of signUpProc()
+	
+	/**
+	 * 로그인 페이지 이동
+	 * 주소 설계 : http://localhost:8080/user/sign-in
+	 * @return
+	 */
+	@GetMapping("/sign-in")
+	public String signInPage() {
+		
+		return "/user/signIn";
+	} // end of signInPage()
+	
+	/**
+	 * 로그인 기능 설계
+	 * @param dto
+	 * @return
+	 */
+	@PostMapping("/sign-in")
+	public String signProc(SignInDTO dto) {
+		if(dto.getUsername() == null || dto.getUsername().trim().isEmpty()) {
+			throw new DataDeliveryException("유저이름을 확인해주세요", HttpStatus.BAD_REQUEST);
+		} 
+		
+		if(dto.getPassword() == null || dto.getPassword().trim().isEmpty()) {
+			throw new DataDeliveryException("비밀번호를 입력해주세요", HttpStatus.BAD_REQUEST);
+		}
+		
+		System.out.println("SignInDTO : " + dto.toString());
+		
+		User principal = userService.readUser(dto);
+		
+		session.setAttribute("principal", principal);
+		System.out.println("principal : " + principal.toString());
+		
+		return "redirect:/index";
 	}
 	
+	/**
+	 * 로그아웃 기능 설계
+	 * @return
+	 */
+	@GetMapping("/logout")
+	public String logout() {
+		
+		session.invalidate(); // 세션 소멸
+		
+		return "redirect:/user/sign-in";
+	}
 	
 	
 	

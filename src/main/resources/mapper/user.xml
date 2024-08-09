@@ -9,7 +9,7 @@
 	<!-- id는 매칭되어 있는 인터페이스에 메서드 명과 같아야 한다.  -->
 	
 	<insert id="insert">
-		insert into user_tb(username, password, fullname, created_at) 
+		insert into user_tb( username, password, fullname, created_at ) 
 		values( #{username}, #{password}, #{fullname}, now() )
 	</insert>
 	
@@ -35,11 +35,13 @@
 	
 	</select>
 	
-	<select id="findByUsernameAndPassword" resultType="com.tenco.bank.repository.model.User">
-		select * 
-		from user_tb 
-		where username = #{username} and password = #{password}
 	
+	<select id="findByUsernameAndPassword" resultType="com.tenco.bank.repository.model.User" >
+		select * from user_tb where username = #{username} and password = #{password}	
 	</select>
+	
+	
+	
+	
 
 </mapper>
