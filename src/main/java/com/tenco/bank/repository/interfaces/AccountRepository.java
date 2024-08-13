@@ -22,8 +22,6 @@ public interface AccountRepository {
 	// ( @Param("여기는DTO의 문자를 넣는다.") 여기는 들어갈 값 )
 	
 	//  파라미터가 두개일경우 마이바티스에서 인식을 못하기때문에 @param을 사용해야한다.
-	public Account findByNumber(@Param("number") String id); 
-	
-	
-	
+	public Account findByNumber(@Param("number") String id); // number : 계좌번호
+
 }

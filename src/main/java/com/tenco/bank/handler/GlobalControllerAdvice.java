@@ -61,7 +61,7 @@ public String unAuthorizedException(UnAuthorizedException e) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(" <script>");
 		sb.append(" alert('"+ e.getMessage() +"');");
-		sb.append(" window.history.back();"); // 뒤로가기
+		sb.append(" location.href='/user/sign-in';"); // 뒤로가기
 		sb.append(" </script>");
 		
 		return sb.toString();

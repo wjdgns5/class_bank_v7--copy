@@ -12,6 +12,7 @@ import com.tenco.bank.dto.SignUpDTO;
 import com.tenco.bank.handler.exception.DataDeliveryException;
 import com.tenco.bank.repository.model.User;
 import com.tenco.bank.service.UserService;
+import com.tenco.bank.utils.Define;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -54,19 +55,19 @@ public class UserController {
 		// 1. 인증검사 
 		if(dto.getUsername() == null || dto.getUsername().trim().isEmpty()) { 
 			// 유저 이름이 null 이거나 유저의 이름이 공백이 있거나 비어있는 경우
-			throw new DataDeliveryException("username을 입력해주세요.", HttpStatus.BAD_REQUEST);
+			throw new DataDeliveryException(Define.ENTER_YOUR_USERNAME, HttpStatus.BAD_REQUEST);
 		}
 		
 		// 2. 인증검사
 		if(dto.getPassword() == null || dto.getPassword().trim().isEmpty()) {
 			// 유저 비밀번호가 null 이거나 유저 비밀번호가 공백이 들어가있거나 비어있는 경우
-			throw new DataDeliveryException("password를 입력해주세요", HttpStatus.BAD_REQUEST);
+			throw new DataDeliveryException(Define.ENTER_YOUR_PASSWORD, HttpStatus.BAD_REQUEST);
 		}
 		
 		// 3. 인증검사
 		if(dto.getFullname() == null || dto.getFullname().trim().isEmpty()) {
 			// 유저 풀 네임이 null 이거나 유저 풀 네임에 공백이 들어가있거나 비어있는 경우
-			throw new DataDeliveryException("fullname을 입력해주세요.", HttpStatus.BAD_REQUEST);
+			throw new DataDeliveryException(Define.ENTER_YOUR_FULLNAME, HttpStatus.BAD_REQUEST);
 		}
 		
 		// 유저 서비스의 회원 가입 등록 서비스 기능을 실행한다.
@@ -94,21 +95,21 @@ public class UserController {
 	@PostMapping("/sign-in")
 	public String signProc(SignInDTO dto) {
 		if(dto.getUsername() == null || dto.getUsername().trim().isEmpty()) {
-			throw new DataDeliveryException("유저이름을 확인해주세요", HttpStatus.BAD_REQUEST);
+			throw new DataDeliveryException(Define.ENTER_YOUR_USERNAME, HttpStatus.BAD_REQUEST);
 		} 
 		
 		if(dto.getPassword() == null || dto.getPassword().trim().isEmpty()) {
-			throw new DataDeliveryException("비밀번호를 입력해주세요", HttpStatus.BAD_REQUEST);
+			throw new DataDeliveryException(Define.ENTER_YOUR_PASSWORD, HttpStatus.BAD_REQUEST);
 		}
 		
 		System.out.println("SignInDTO : " + dto.toString());
 		
 		User principal = userService.readUser(dto);
 		
-		session.setAttribute("principal", principal);
+		session.setAttribute(Define.PRINCIPAL, principal);
 		System.out.println("principal : " + principal.toString());
 		
-		return "redirect:/index";
+		return "redirect:/account/list";
 	}
 	
 	/**

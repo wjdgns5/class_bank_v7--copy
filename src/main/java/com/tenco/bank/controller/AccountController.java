@@ -1,17 +1,23 @@
 package com.tenco.bank.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.tenco.bank.dto.SaveDTO;
+import com.tenco.bank.dto.WithdrawalDTO;
 import com.tenco.bank.handler.exception.DataDeliveryException;
 import com.tenco.bank.handler.exception.UnAuthorizedException;
+import com.tenco.bank.repository.model.Account;
 import com.tenco.bank.repository.model.User;
 import com.tenco.bank.service.AccountService;
+import com.tenco.bank.utils.Define;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -37,10 +43,10 @@ public class AccountController {
 	public String savePage() {
 		
 		// 1. 인증 검사가 필요 ( account 전체가 필요하다.)
-		User principal = (User) session.getAttribute("principal");
+		User principal = (User) session.getAttribute(Define.PRINCIPAL);
 		
 		if(principal == null) { // User 세션에 있는 값이 null 이라는 조건
-			throw new UnAuthorizedException("인증된 사용자가 아닙니다.", HttpStatus.UNAUTHORIZED);
+			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
 		}
 		
 		return "account/save";
@@ -59,28 +65,103 @@ public class AccountController {
 		// 3. 유효성 검사 --> form 데이터를 받았지만 이상하게 받았는지 아닌지 컨트롤러에서 처리
 		// 4. 서비스 호출 --> 제대로된 데이터 양식을 받게되면 서비스에서 처리 후 컨트롤러로 다시 온다.
 		
-		User principal = (User) session.getAttribute("principal"); // 유저 세션 가져옴
+		User principal = (User) session.getAttribute(Define.PRINCIPAL); // 유저 세션 가져옴
 		
 		if(principal == null) { // 유저 세션을 통한 인증검사
-			throw new UnAuthorizedException("인증된 사용자가 아닙니다.", HttpStatus.UNAUTHORIZED);
+			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
 		}
 		
 		if(dto.getNumber() == null || dto.getNumber().trim().isEmpty()) {
-			throw new DataDeliveryException("계좌 번호를 입력해주세요.", HttpStatus.BAD_REQUEST);
+			throw new DataDeliveryException(Define.ENTER_YOUR_ACCOUNT_NUMBER, HttpStatus.BAD_REQUEST);
 		}
 		
 		if(dto.getPassword() == null || dto.getPassword().trim().isEmpty()) {
-			throw new DataDeliveryException("계좌 비밀번호를 입력해주세요.", HttpStatus.BAD_REQUEST);
+			throw new DataDeliveryException(Define.ENTER_YOUR_PASSWORD, HttpStatus.BAD_REQUEST);
 		}
 		
 		if(dto.getBalance() == null || dto.getBalance() <= 0) {
-			throw new DataDeliveryException("계좌 잔액을 입력해주세요.", HttpStatus.BAD_REQUEST);
+			throw new DataDeliveryException(Define.ENTER_YOUR_BALANCE, HttpStatus.BAD_REQUEST);
 		}
 		
 		accountService.createAccount(dto, principal.getId());
 		
 		return "redirect:/index";
+	} // end of savePage()
+	
+	/**
+	 * 계좌 목록 화면 요청
+	 * 주소 설계 : http://localhost:8080/account/list
+	 * 화면 : list.jsp
+	 * @return 
+	 */
+	@GetMapping({"/list", "/"})
+	public String listPage(Model model) {
+		
+		// 유저 세션 불러오기
+		User principal = (User) session.getAttribute(Define.PRINCIPAL);
+		// 1. 인증검사
+		if(principal == null) {
+			throw new DataDeliveryException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
+		}
+		
+		// 2. 유효성 검사
+		// 3. 서비스 호출
+		List<Account> accountList = accountService.readAccountListByUserId(principal.getId());
+		if(accountList.isEmpty()) {
+			model.addAttribute("accountList", null);
+		} else {
+			model.addAttribute("accountList", accountList);
+		}
+		
+		return "account/list";
+	} // end of listPage()
+	
+	/**
+	 * 출금 페이지 요청
+	 * 주소: localhost:8080/account/withdrawal
+	 * @return
+	 */
+	@GetMapping("/withdrawal")
+	public String withdrawalPage() {
+		// 1. 인증검사
+		User principal = (User) session.getAttribute(Define.PRINCIPAL);
+		if(principal == null) {
+			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.UNAUTHORIZED);
+		}
+		return "account/withdrawal";
 	}
+	
+	/**
+	 * 출금 기능 
+	 * @return
+	 */
+	@PostMapping("/withdrawal")
+	public String withdrawalProc(WithdrawalDTO dto) {
+		
+		// 1. 인증검사
+		User principal = (User) session.getAttribute(Define.PRINCIPAL);
+		
+		if(principal == null) { // 유저 세션 값이 null 인 경우
+			throw new UnAuthorizedException(Define.NOT_AN_AUTHENTICATED_USER, HttpStatus.BAD_REQUEST);
+		}
+		
+		if(dto.getAmount().longValue() < 0) {
+			throw new DataDeliveryException(Define.ENTER_YOUR_BALANCE, HttpStatus.BAD_REQUEST);
+		}
+		
+		if(dto.getWAccountNumber() == null) {
+			throw new DataDeliveryException(Define.ENTER_YOUR_ACCOUNT_NUMBER, HttpStatus.BAD_REQUEST);
+		}
+		
+		if(dto.getWAccountPassword() == null || dto.getWAccountPassword().isEmpty()) {
+			throw new DataDeliveryException(Define.ENTER_YOUR_PASSWORD, HttpStatus.BAD_REQUEST);
+		}
+		
+		accountService.updateAccountWithdraw(dto, principal.getId());
+		
+		return "redirect:/account/list";
+	}
+	
 	
 	
 	

@@ -40,7 +40,7 @@
 		
 	</select>
 	
-	<select id="findAll">
+	<select id="findAll" resultType="com.tenco.bank.repository.model.History">
 		
 		select *
 		from history_tb
