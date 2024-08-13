@@ -101,6 +101,9 @@ public class AccountService {
 		// accoutEntity 객체의 잔액을 변경하고 업데이트 처리해야 한다. 
 		accountEntity.withdraw(dto.getAmount());
 		
+		// update 처리 
+		accountRepository.updateById(accountEntity);
+		
 		// 6 - 거래 내역 등록 
 		History history = new History();
 		history.setAmount(dto.getAmount()); // 거래금액
