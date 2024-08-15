@@ -43,6 +43,10 @@
 		from account_tb 
 		where number = #{number}
 		
+	</select>
+	
+	<select id="findByAccountId"  resultType="com.tenco.bank.repository.model.Account">
+		select * from account_tb where id = #{accountId}
 		
 	</select>
 	

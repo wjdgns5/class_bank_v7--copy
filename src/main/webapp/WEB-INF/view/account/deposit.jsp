@@ -8,7 +8,7 @@
 	<h2>계좌생성 (인증)</h2>
 	<h5>Bank App에 오신걸 환영합니다</h5>
 	<!-- 예외적으로 로그인은 보안 때문에 post로 던지자 -->
-	<form action="/account/deposit" method="post"> 
+	<form action="/account/deposit" method="post", onsubmit="return false;"> 
 		<div class="form-group">
 			<label for="amount">입금 금액:</label>
 			<input type="number" class="form-control" placeholder="Enter amount" id="amount" name="amount" value="1000"  >
