@@ -73,7 +73,8 @@ public class UserController {
 		// 유저 서비스의 회원 가입 등록 서비스 기능을 실행한다.
 		userService.createUser(dto);
 		
-		return "redirect:/index";
+	//	return "redirect:/index";
+		return "redirect:/user/sign-in";
 	} // end of signUpProc()
 	
 	/**
