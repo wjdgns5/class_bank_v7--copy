@@ -54,3 +54,7 @@ mybatis:
 logging:
   level:
     org.apache.ibatis: DEBUG #MyBatis 로깅 레벨을 DEBUG로 설정하여 실행되는 SQL 쿼리와 내부 로깅 정보를 콘솔에 출력합니다.
+    
+  #초기 파마레터 설정
+file:
+  upload-dir: C:\\work_spring\\upload/
