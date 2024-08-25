@@ -3,6 +3,7 @@ package com.tenco.bank.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,9 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 //	@Autowired 어노테이션으로 대체 가능하다.
 // 	생성자 의존 주입 - DI
@@ -34,6 +38,9 @@ public class UserService {
 	public void createUser(SignUpDTO dto) {
 		int result = 0; 
 		try {
+			String hashPwd = passwordEncoder.encode(dto.getPassword());
+			System.out.println("hashPwd : " + hashPwd);
+			dto.setPassword(hashPwd);
 			result = userRepository.insert(dto.toUser());
 		} catch (DataAccessException e) {
 			throw new DataDeliveryException("잘못된 처리입니다", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -55,7 +62,7 @@ public class UserService {
 		User userEntity = null;
 		
 		try {
-			userEntity = userRepository.findByUsernameAndPassword(dto.getUsername(), dto.getPassword());
+			userEntity = userRepository.findByUsername(dto.getUsername());
 		} catch (DataDeliveryException e) {
 			throw new DataDeliveryException("잘못된 처리입니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
@@ -63,8 +70,14 @@ public class UserService {
 		}
 		
 		if(userEntity == null) {
-			throw new DataDeliveryException("아이디 혹은 비밀번호가 틀렸습니다.", HttpStatus.BAD_REQUEST);
+			throw new DataDeliveryException("존재하지 않는 아이디 입니다.", HttpStatus.BAD_REQUEST);
 		}
+		
+		boolean isPwdMatched = passwordEncoder.matches(dto.getPassword(), userEntity.getPassword());
+		if(isPwdMatched == false) {
+			throw new DataDeliveryException("비밀번호가 잘못되었습니다.", HttpStatus.BAD_REQUEST);
+		}
+		
 		System.out.println("userEntity : " + userEntity.toString());
 		
 		return userEntity;

@@ -18,5 +18,8 @@ public interface UserRepository {
 	public User findById(Integer id); // 유저 아이디로 유저 데이터를 조회한다.
 	public List<User> findAll(); // 모든 유저의 정보를 조회한다.
 	
-	public User findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
+	public User findByUsernameAndPassword(@Param("username") String username, @Param("password")String password);
+	
+	// 코드 추가
+	public User findByUsername(@Param("username") String username);
 }

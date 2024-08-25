@@ -25,6 +25,9 @@ repositories {
 }
 
 dependencies {
+
+	// 암호화 
+	implementation 'org.springframework.security:spring-security-crypto'
 	
 	// 의존성 추가
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
