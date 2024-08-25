@@ -24,7 +24,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(authInterceptor)
 			.addPathPatterns("/account/**")
-			.addPathPatterns("/auth/**");
+			.addPathPatterns("file:\\work_spring\\upload/");
 	}
 	
 	@Bean // IoC 대상 (싱글톤 처리)

@@ -15,9 +15,11 @@ import lombok.ToString;
 @ToString
 public class User {
 	
-	private Integer id;
-	private String username;
-	private String password;
-	private String fullname;
+	private Integer id; 
+	private String username; 
+	private String password; 
+	private String fullname; 
+	private String orginFileName;
+	private String uploadFileName;
 	private Timestamp createdAt;
 }
