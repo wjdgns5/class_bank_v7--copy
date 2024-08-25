@@ -25,13 +25,13 @@ public class GlobalControllerAdvice {
 	 * @ExceptionHandler(xxx.class) : xxx.class 익셉션이 발생할 경우 캐치를 하겠다는 뜻이다
 	 * 
 	 */
-	@ExceptionHandler(Exception.class)
-	public void exception(Exception e) {
-		System.out.println("------------------");
-		System.out.println(e.getClass().getName());
-		System.out.println(e.getMessage());
-		System.out.println("------------------");
-	}
+//	@ExceptionHandler(Exception.class)
+//	public void exception(Exception e) {
+//		System.out.println("------------------");
+//		System.out.println(e.getClass().getName());
+//		System.out.println(e.getMessage());
+//		System.out.println("------------------");
+//	}
 	
 	
 	// @ResponseBody : 자바 객체를 HttpResponse의 본문 responseBody의 내용으로 매핑하는 역할
