@@ -117,8 +117,10 @@ public class UserService {
 			throw new DataDeliveryException("파일 크기는 20MB 이상 클 수 없습니다.", HttpStatus.BAD_REQUEST);
 		}
 		
+		String saveDirectory = uploadDir;
+		
 		// 서버 컴퓨터에 파일을 넣을 디렉토리가 있는지 검사 
-		String saveDirectory = Define.UPLOAD_FILE_DERECTORY;
+//		String saveDirectory = Define.UPLOAD_FILE_DERECTORY;
 		File directory = new File(saveDirectory);
 		if(!directory.exists()) {
 			directory.mkdirs();

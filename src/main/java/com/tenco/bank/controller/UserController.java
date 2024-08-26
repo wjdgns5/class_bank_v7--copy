@@ -27,9 +27,11 @@ import com.tenco.bank.service.UserService;
 import com.tenco.bank.utils.Define;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController { 
 	
 	@Autowired // DI 처리 --> 의존성 주입
@@ -216,12 +218,15 @@ public class UserController {
 	    // 2.우리사이트 최초 소셜 사용자 인지 판별 
 	    User oldUser = userService.searchUsername(signUpDTO.getUsername());
 	    // select * from user_tb where username = ?
+	 
 	    if(oldUser == null) {
 	    	// 사용자가 최초 소셜 로그인 사용자 임
 	    	oldUser = new User();
 	    	oldUser.setUsername(signUpDTO.getUsername());
 	    	oldUser.setPassword(null);
 	    	oldUser.setFullname(signUpDTO.getFullname());
+	    	oldUser.setOrginFileName(signUpDTO.getOriginFileName()); // 추가
+	    	oldUser.setUploadFileName(signUpDTO.getUploadFileName()); // 추가
 	    	userService.createUser(signUpDTO);
 	    }
 	    
@@ -229,8 +234,8 @@ public class UserController {
     	signUpDTO.setOriginFileName(kakaoProfile.getProperties().getThumbnailImage());
     	oldUser.setUploadFileName(kakaoProfile.getProperties().getThumbnailImage());
     	
-    	System.out.println(kakaoProfile.getProperties().getThumbnailImage());
-    	System.out.println(kakaoProfile.getProperties().getThumbnailImage());
+    	System.out.println("@@: " + kakaoProfile.getProperties().getThumbnailImage());
+    	System.out.println("@@@ : " + kakaoProfile.getProperties().getThumbnailImage());
 	    
 	    // 자동 로그인 처리
 	    session.setAttribute(Define.PRINCIPAL, oldUser);
