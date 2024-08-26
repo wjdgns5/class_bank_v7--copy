@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,9 @@ public class UserService {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Value("${file.upload-dir}")
+	private String uploadDir;
 
 //	@Autowired 어노테이션으로 대체 가능하다.
 // 	생성자 의존 주입 - DI
@@ -44,11 +48,11 @@ public class UserService {
 	public void createUser(SignUpDTO dto) {
 		int result = 0; 
 		
-		System.out.println("-----------------------");
-		System.out.println(dto.getMFile().getOriginalFilename()); // 원본
-		System.out.println("-----------------------");
+//		System.out.println("-----------------------");
+//		System.out.println(dto.getMFile().getOriginalFilename()); // 원본
+//		System.out.println("-----------------------");
 		
-		if(!dto.getMFile().isEmpty()) {
+		if(dto.getMFile() != null &&  !dto.getMFile().isEmpty()) {
 			// 파일 업로드 로직 구현 
 			String[] fileNames = uploadFile(dto.getMFile());
 			dto.setOriginFileName(fileNames[0]);
@@ -138,5 +142,14 @@ public class UserService {
 		} 
 		
 		return new String[] {mFile.getOriginalFilename(), uploadFileName}; 
+	}
+	
+	/**
+	 * username 사용자 존재 여부 조회 
+	 * @param String username 
+	 * @return User, null 
+	 */
+	public User searchUsername(String username) {
+		return userRepository.findByUsername(username);
 	}
 }

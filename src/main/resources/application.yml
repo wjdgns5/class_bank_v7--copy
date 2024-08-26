@@ -58,3 +58,6 @@ logging:
   #초기 파마레터 설정
 file:
   upload-dir: C:\\work_spring\\upload/
+ 
+tenco: # asd123 해시값
+  key: 54d5cb2d332dbdb4850293caae4559ce88b65163f1ea5d4e4b3ac49d772ded14
